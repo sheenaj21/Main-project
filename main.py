@@ -4,7 +4,10 @@ import speech_recognition as sr
 from scraper.bot_scraper import *
 import pyautogui
 import pywhatkit
-from datetime import datetime
+from datetime import datetime 
+from gpt4 import GPT
+from mail import send_email
+import pyjokes
 
 def speak(text):
     voice = "en-US-AriaNeural"
@@ -78,6 +81,21 @@ while True:
     elif 'switch' in query:
         pyautogui.hotkey('ctrl','tab')
         speak('done pal')
+    
+    elif 'joke' in query:
+        speak(pyjokes.get_joke())
+    elif 'send an email' in query or 'compose an email'in query or 'write an email' in query:
+        speak('sure,can you provide the email id of the receiver')
+        receiver1 = take_command().lower()
+        receiver = receiver1.replace(" ","") + "@gmail.com"
+        speak('what should be the subject of the email')
+        subject = take_command()
+        speak('give me a prompt')
+        email_prompt = take_command()
+        content = GPT('write an email for' +email_prompt)
+        send_email(receiver, subject, content)
+        speak(f'email send succesfully to {receiver}')
+
 
     elif query == ' ':  
         take_command().lower()
